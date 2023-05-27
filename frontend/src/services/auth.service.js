@@ -1,19 +1,9 @@
 import axios from "axios";
 
-// const signup = (email, password) => {
-//   return axios
-//     .post(API_URL + "/signup", {
-//       email,
-//       password,
-//     })
-//     .then((response) => {
-//       if (response.data.accessToken) {
-//         localStorage.setItem("user", JSON.stringify(response.data));
-//       }
-//
-//       return response.data;
-//     });
-// };
+const signup = (firstname, lastname, nickname, email, password) => {
+  return axios.post("http://localhost:5000/api/auth/registration",
+      {firstname, lastname, nickname, email, password})
+};
 
 const login = (email, password) => {
     return axios.post("http://localhost:5000/api/auth/login",
@@ -78,6 +68,7 @@ const authInterceptor = () => {
 }
 
 const authService = {
+    signup,
     login,
     logout,
     getCurrentUser,

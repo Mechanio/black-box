@@ -27,26 +27,27 @@ export default function Login() {
 
     return (
         <div className="login">
+            <div className="left-div"></div>
             {error && <p style={{color: 'red'}}>{error}</p>}
-            <form className="form-horizontal" onSubmit={handleClick}>
-                <div className="text-center">
-                    <div className="form-group row">
-                        <label className="control-label col-sm-5">Email: </label>
-                        <div className="col-sm-2">
-                            <input className="form-control" type="email" value={email}
-                                   onChange={(e) => setEmail(e.target.value)}/>
-                        </div>
+            <form className="login-form" onSubmit={handleClick}>
+                <div className="login-form-row">
+                    <div className="login-form-column" style={{ marginRight: '10px' }}>
+                        <label>Email:</label>
+                        <label>Password:</label>
                     </div>
-                    <div className="form-group row">
-                        <label className="control-label col-sm-5">Password: </label>
-                        <div className="col-sm-2">
-                            <input className="form-control" type="password" value={password}
-                                   onChange={(e) => setPassword(e.target.value)}/>
-                        </div>
+                    <div className="login-form-column">
+
+                        <input  type="email" value={email}
+                           onChange={(e) => setEmail(e.target.value)}/>
+
+                        <input  type="password" value={password}
+                               onChange={(e) => setPassword(e.target.value)}/>
+                        <button className="btn btn-primary" type="submit">Login</button>
                     </div>
-                    <button className="btn btn-primary" type="submit">Login</button>
+
                 </div>
             </form>
+            <div className="right-div"></div>
         </div>
     )
 }

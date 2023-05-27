@@ -55,7 +55,7 @@ def get_current_user():
 
 
 @users_bp.route("/api/users/<int:id_>", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 # @admin_group_required
 def get_user(id_):
     """

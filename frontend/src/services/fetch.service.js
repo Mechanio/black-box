@@ -40,6 +40,10 @@ const getProfileInfo = () => {
     return axios.get(`http://localhost:5000/api/users/current`)
 }
 
+const getUserProfileInfo = (id_) => {
+    return axios.get(`http://localhost:5000/api/users/${id_}`)
+}
+
 const getMoviesGenresInfo = () => {
     return axios.get(`http://localhost:5000/api/movies/genres`)
 }
@@ -49,6 +53,18 @@ const getTVGenresInfo = () => {
 }
 const getKeywordInfo = (keyword) => {
     return axios.get(`http://localhost:5000/api/keywords?keyword=${keyword}`)
+}
+
+const getScoresForUser = (id_) => {
+    return axios.get(`http://localhost:5000/api/scores/${id_}`)
+}
+
+const getScoresForMedia = (id_) => {
+    return axios.get(`http://localhost:5000/api/scores/media/${id_}`)
+}
+
+const addScoreForMedia = (id_, review, score_itself, movie_id, movie_name) => {
+    return axios.post(`http://localhost:5000/api/scores/${id_}`, {review, score_itself, movie_id, movie_name})
 }
 
 const fetchservice = {
@@ -61,10 +77,14 @@ const fetchservice = {
     getNewPopularTVInfo,
     getTVInfoById,
     getProfileInfo,
+    getUserProfileInfo,
     getMoviesGenresInfo,
     getTVGenresInfo,
     getKeywordInfo,
     getTVInfoByGenre,
+    getScoresForUser,
+    getScoresForMedia,
+    addScoreForMedia,
 }
 
 export default fetchservice

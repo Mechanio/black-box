@@ -12,6 +12,8 @@ import TV_Show from "./components/TV_show";
 import Login from './Auth/Login'
 import Profile from './Profile'
 import TVShows from "./components/TV_shows";
+import User from "./components/User";
+import Register from "./Auth/Register";
 
 function App() {
     const {pathname} = useLocation()
@@ -28,7 +30,9 @@ function App() {
                 <Routes>
                     <Route exact path="/"/>
                     <Route exact path="/auth/login" element={<Login/>}/>
+                    <Route exact path="/auth/registration" element={<Register/>}/>
                     <Route exact path="/profile" element={<Profile/>}/>
+                    <Route exact path="/user/:id" element={<User/>}/>
                     <Route exact path="/movie/:id" element={<Movie/>}/>
                     <Route exact path="/person/:id" element={<Person/>}/>
                     <Route exact path="/movies" element={<Movies/>}/>

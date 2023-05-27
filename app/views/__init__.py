@@ -4,3 +4,4 @@ from .genres import genres_bp
 from .tv_show import tv_show_bp
 from .auth import auth_bp
 from .users import users_bp
+from .scores import scores_bp

@@ -7,15 +7,6 @@ from app.models import UserModel, RevokedTokenModel
 auth_bp = Blueprint('auth', __name__)
 
 
-def get_groups(user):
-    group_list = []
-    # if user.is_admin:
-    #     group_list.append("admin")
-    if user.is_active:
-        group_list.append("customer")
-    return {"groups": group_list}
-
-
 @auth_bp.route("/api/auth/registration", methods=["POST"])
 def register():
     """
@@ -42,9 +33,8 @@ def register():
                      hashed_password=UserModel.generate_hash(password), is_active=True)
     try:
         user.save_to_db()
-        groups = get_groups(user)
-        access_token = create_access_token(identity=email, additional_claims=groups)
-        refresh_token = create_refresh_token(identity=email, additional_claims=groups)
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
         return {
             "id": user.id,
             'access_token': access_token,
@@ -72,10 +62,9 @@ def login():
     if not current_user:
         return {"message": f"User with email {email} doesn't exist"}, 404
 
-    groups = get_groups(current_user)
     if UserModel.verify_hash(password, current_user.hashed_password):
-        access_token = create_access_token(identity=email, additional_claims=groups)
-        refresh_token = create_refresh_token(identity=email, additional_claims=groups)
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
         return {
             "message": f"Logged in as {current_user.firstname + ' ' + current_user.lastname}, ({current_user.email})",
             'access_token': access_token,
@@ -97,8 +86,7 @@ def post():
     current_user = UserModel.find_by_email(email, to_dict=False)
     if not current_user:
         return {"message": f"User with email {email} doesn't exist"}, 404
-    groups = get_groups(current_user)
-    access_token = create_access_token(identity=current_user_identity, additional_claims=groups)
+    access_token = create_access_token(identity=current_user_identity)
     return {'access_token': access_token}, 201
 
 

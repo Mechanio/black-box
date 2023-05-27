@@ -17,8 +17,8 @@ class UserModel(base):
     hashed_password = Column(String(100), nullable=False)
     # is_admin = Column(Boolean(), default=False)
     is_active = Column(Boolean(), nullable=False)
-    # tickets = relationship("TicketsModel", lazy='dynamic', cascade="all, delete-orphan",
-    #                        foreign_keys="TicketsModel.user_id")
+    scores = relationship("ScoreModel", lazy='dynamic', cascade="all, delete-orphan",
+                           foreign_keys="ScoreModel.user_id")
 
     @classmethod
     def find_by_id(cls, id_, to_dict=True):
@@ -165,7 +165,6 @@ class UserModel(base):
         return sha256.verify(password, hashed)
 
 
-
 class RevokedTokenModel(base):
     __tablename__ = 'revoked_tokens'
     id_ = Column(Integer, primary_key=True)
@@ -189,3 +188,103 @@ class RevokedTokenModel(base):
         """
         query = session.query(cls).filter_by(jti=jti).first()
         return bool(query)
+
+
+class ScoreModel(base):
+    __tablename__ = "scores"
+    id = Column(Integer, primary_key=True)
+    movie_id = Column(Integer, nullable=False)
+    movie_name = Column(String(100), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship("UserModel", back_populates='scores')
+    score_itself = Column(Integer, nullable=False)
+    review = Column(String(300), nullable=False)
+
+    @classmethod
+    def find_by_id(cls, id_, to_dict=True):
+        """
+        Find score by id
+        :param id_: score id
+        :param to_dict: if True - returns dict representation of score info, if False -
+            returns model instance
+        :return: dict representation of score info or model instance
+        """
+        score = session.query(cls).filter_by(id=id_).first()
+        if not score:
+            return {}
+        if score.is_active:
+            if to_dict:
+                return cls.to_dict(score)
+            else:
+                return score
+        else:
+            return {}
+
+    @classmethod
+    def find_by_movie_id(cls, movie_id):
+        """
+        Find scores by movie_id
+        :param movie_id: movie_id
+        :return: list of dict representations of scores
+        """
+        scores = session.query(cls).filter_by(movie_id=movie_id).order_by(cls.id).all()
+        return [cls.to_dict(score) for score in scores]
+
+    @classmethod
+    def find_by_user_id(cls, user_id):
+        """
+        Find scores by user id
+        :param user_id: user id
+        :return: list of dict representations of scores
+        """
+        scores = session.query(cls).filter_by(user_id=user_id).order_by(cls.id).all()
+        return [cls.to_dict(score) for score in scores]
+
+    @classmethod
+    def return_all(cls):
+        """
+        Return all scores
+        :return: list of dict representations of scores
+        """
+        scores = session.query(cls).order_by(cls.id).all()
+        return [cls.to_dict(score) for score in scores]
+
+    @classmethod
+    def delete_by_id(cls, id_):
+        """
+        Delete score by id
+        :param id_: score id
+        :return: code status (200, 404)
+        """
+        score = session.query(cls).filter_by(id=id_).first()
+        if score:
+            session.delete(score)
+            session.commit()
+            return 200
+        else:
+            return 404
+
+    def save_to_db(self):
+        """
+        Save model instance to database
+        :return: None
+        """
+        session.add(self)
+        session.commit()
+
+    @staticmethod
+    def to_dict(score):
+        """
+        Represent model instance (score) information
+        :param score: model instance
+        :return: dict representation of score info
+        """
+        return {
+            "id": score.id,
+            "movie_id": score.movie_id,
+            "movie_name": score.movie_name,
+            "user_id": score.user_id,
+            "score_itself": score.score_itself,
+            "review": score.review,
+            "user": UserModel.find_by_id(score.user_id)
+        }

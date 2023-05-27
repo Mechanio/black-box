@@ -23,22 +23,24 @@ def setup_jwt(app):
         jti = jwt_payload['jti']
         return RevokedTokenModel.is_jti_blacklisted(jti)
 
+
 def create_app():
     app = Flask(__name__)
 
     CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
     app.config.from_object(Config)
     tmdb.API_KEY = Config.API_KEY
     setup_database(app)
     setup_jwt(app)
 
-    from .views import search_bp, movie_bp, genres_bp, tv_show_bp, auth_bp, users_bp
+    from .views import search_bp, movie_bp, genres_bp, tv_show_bp, auth_bp, users_bp, scores_bp
     app.register_blueprint(search_bp)
     app.register_blueprint(movie_bp)
     app.register_blueprint(genres_bp)
     app.register_blueprint(tv_show_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
-
+    app.register_blueprint(scores_bp)
 
     return app
