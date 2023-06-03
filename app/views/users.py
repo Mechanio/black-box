@@ -11,7 +11,7 @@ users_bp = Blueprint('users', __name__)
 @jwt_required()
 def get_users():
     """
-    Get all users or by name as admin
+    Get all users or by name
     :return: json with users info
     """
     firstname = request.args.get("firstname")
@@ -30,7 +30,6 @@ def get_users():
 
 # @users_bp.route("/api/users/inactive", methods=["GET"])
 # @jwt_required()
-# @admin_group_required
 # def get_inactive_users():
 #     """
 #     Get all inactive users as admin
@@ -55,11 +54,9 @@ def get_current_user():
 
 
 @users_bp.route("/api/users/<int:id_>", methods=["GET"])
-# @jwt_required()
-# @admin_group_required
 def get_user(id_):
     """
-    Get user info by id as admin
+    Get user info by id
     :param id_: id of user
     :return: json with user info
     """
@@ -72,29 +69,27 @@ def get_user(id_):
 
 @users_bp.route("/api/users/", methods=["POST"])
 @jwt_required()
-# @admin_group_required
 def create_user():
     """
-    Create user as admin
+    Create user
     :return: json with new user id
     """
     if not request.json:
-        return jsonify({"message": 'Please, specify "firstname", "lastname", "email", "password" and "is_admin".'}), 400
+        return jsonify({"message": 'Please, specify "firstname", "lastname", "email", "password".'}), 400
 
     firstname = request.json.get("firstname")
     lastname = request.json.get("lastname")
     email = request.json.get("email")
     password = request.json.get("password")
-    is_admin = request.json.get("is_admin")
 
-    if not firstname or not lastname or not email or not password or not isinstance(is_admin, bool):
-        return jsonify({"message": 'Please, specify "firstname", "lastname", "email", "password" and "is_admin".'}), 400
+    if not firstname or not lastname or not email or not password:
+        return jsonify({"message": 'Please, specify "firstname", "lastname", "email", "password".'}), 400
 
     if UserModel.find_by_email(email, to_dict=False):
         return {"message": f"Email {email} already used"}, 404
 
     user = UserModel(firstname=firstname, lastname=lastname, email=email,
-                     hashed_password=UserModel.generate_hash(password), is_admin=is_admin, is_active=True)
+                     hashed_password=UserModel.generate_hash(password), is_active=True)
     user.save_to_db()
     return jsonify({"id": user.id}), 201
 

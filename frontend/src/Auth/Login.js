@@ -36,15 +36,12 @@ export default function Login() {
                         <label>Password:</label>
                     </div>
                     <div className="login-form-column">
-
                         <input  type="email" value={email}
                            onChange={(e) => setEmail(e.target.value)}/>
-
                         <input  type="password" value={password}
                                onChange={(e) => setPassword(e.target.value)}/>
                         <button className="btn btn-primary" type="submit">Login</button>
                     </div>
-
                 </div>
             </form>
             <div className="right-div"></div>

@@ -15,7 +15,6 @@ class UserModel(base):
     nickname = Column(String(30), nullable=False)
     email = Column(String(50), nullable=False)
     hashed_password = Column(String(100), nullable=False)
-    # is_admin = Column(Boolean(), default=False)
     is_active = Column(Boolean(), nullable=False)
     scores = relationship("ScoreModel", lazy='dynamic', cascade="all, delete-orphan",
                            foreign_keys="ScoreModel.user_id")
@@ -140,9 +139,7 @@ class UserModel(base):
             "lastname": user.lastname,
             "nickname": user.nickname,
             "email": user.email,
-            # "is_admin": user.is_admin,
             "is_active": user.is_active,
-            # "tickets": [TicketsModel.to_dict(ticket) for ticket in user.tickets],
         }
 
     @staticmethod

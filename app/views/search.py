@@ -7,6 +7,10 @@ search_bp = Blueprint('search', __name__)
 
 @search_bp.route("/api/search_movies", methods=["GET"])
 def get_search_movie():
+    """
+    Method for movie search with page
+    :return: movies list
+    """
     name = request.args.get("name")
     page = request.args.get("page")
     if name:
@@ -18,9 +22,12 @@ def get_search_movie():
         return jsonify({"message": 'Please, specify "name".'}), 400
 
 
-
 @search_bp.route("/api/search_person", methods=["GET"])
 def get_search_person():
+    """
+    Method for person search
+    :return: person info
+    """
     name = request.args.get("name")
     if name:
         search = tmdb.Search()
@@ -32,6 +39,10 @@ def get_search_person():
 
 @search_bp.route("/api/search_tv", methods=["GET"])
 def get_search_tv():
+    """
+    Method for tv search with page
+    :return: tv list
+    """
     name = request.args.get("name")
     page = request.args.get("page")
     if name:
@@ -45,6 +56,10 @@ def get_search_tv():
 
 @search_bp.route("/api/new_popular_movies", methods=["GET"])
 def get_new_popular_movies():
+    """
+    Method for popular movie search with page
+    :return: movies list
+    """
     page = request.args.get("page")
     search = tmdb.Discover()
     response = search.movie(page=page)
@@ -53,6 +68,10 @@ def get_new_popular_movies():
 
 @search_bp.route("/api/person/<int:id_>", methods=["GET"])
 def get_person(id_):
+    """
+    Method for person info
+    :return: person info
+    """
     person = tmdb.People(id_)
     if person:
         return jsonify(info=person.info(), cast=person.combined_credits()["cast"],

@@ -61,7 +61,6 @@ const Movie = () => {
     return (
         <div className="movie">
             <div className="left-div"></div>
-
             <div className="movie-synopsis">
                 <div className="poster">
                     <img src={`https://image.tmdb.org/t/p/original/${movie.info.poster_path}`} onError={(e) => {e.target.onerror = null; e.target.src='/notfound.png'}}/>

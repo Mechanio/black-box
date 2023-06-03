@@ -1,5 +1,5 @@
 from flask import jsonify, request, Blueprint
-from flask_jwt_extended import get_jwt, jwt_required
+from flask_jwt_extended import jwt_required
 
 from app.models import ScoreModel, UserModel
 
@@ -8,7 +8,6 @@ scores_bp = Blueprint('scores', __name__)
 
 
 @scores_bp.route("/api/scores/<int:id_>", methods=["GET"])
-# @jwt_required()
 def get_scores(id_):
     """
     Get user scores
@@ -22,7 +21,6 @@ def get_scores(id_):
 
 
 @scores_bp.route("/api/scores/media/<int:id_>", methods=["GET"])
-# @jwt_required()
 def get_scores_for_media(id_):
     """
     Get media scores
@@ -30,33 +28,24 @@ def get_scores_for_media(id_):
     """
     scores = ScoreModel.find_by_movie_id(id_)
 
-    # scores = ScoreModel.find_by_user_id(current_user.id)
-
     return jsonify(scores)
 
 
-
-# @tickets_bp.route("/api/tickets/<int:id_>", methods=["GET"])
+# @tickets_bp.route("/api/scores/<int:id_>", methods=["GET"])
 # @jwt_required()
-# def get_ticket(id_):
+# def get_score(id_):
 #     """
-#     Get ticket info by id
-#     :param id_: id of ticket
-#     :return: json with ticket info
+#     Get score info by id
+#     :param id_: id of score
+#     :return: json with score info
 #     """
 #     email = get_jwt().get("sub")
 #     current_user = UserModel.find_by_email(email, to_dict=False)
-#     ticket = TicketsModel.find_by_id(id_)
-#     if not ticket:
-#         return jsonify({"message": "Ticket not found."}), 404
+#     score = ScoresModel.find_by_id(id_)
+#     if not score:
+#         return jsonify({"message": "Score not found."}), 404
 #
-#     groups = get_jwt().get("groups")
-#     if "admin" not in groups:
-#         if current_user.id != ticket["user_id"]:
-#             return jsonify({"message": "Not allowed"}), 405
-#
-#     return jsonify(ticket)
-
+#     return jsonify(score)
 
 @scores_bp.route("/api/scores/<int:id_>", methods=["POST"])
 @jwt_required()
@@ -79,7 +68,8 @@ def create_score(id_):
 
     review = request.json.get("review")
     movie_name = request.json.get("movie_name")
-    score = ScoreModel(movie_id=movie_id, user_id=current_user.id, score_itself=score_itself, review=review, movie_name=movie_name)
+    score = ScoreModel(movie_id=movie_id, user_id=current_user.id, score_itself=score_itself, review=review,
+                       movie_name=movie_name)
     score.save_to_db()
 
     return jsonify({"id": score.id}), 201
@@ -93,53 +83,33 @@ def create_score(id_):
 #     :param id_: id of score
 #     :return: json with message "Updated"
 #     """
-#     session_id = request.json.get("session_id")
 #     user_id = request.json.get("user_id")
 #
-#     ticket = TicketsModel.find_by_id(id_, to_dict=False)
-#     if not ticket:
-#         return jsonify({"message": "Ticket not found."}), 404
-#
-#     if session_id:
-#         current_session = MovieSessionsModel.find_by_id(ticket.session_id, to_dict=False)
-#         current_session.remain_seats += 1
-#         current_session.save_to_db()
-#         ticket.session_id = session_id
-#         new_current_session = MovieSessionsModel.find_by_id(session_id, to_dict=False)
-#         if new_current_session.remain_seats == 0:
-#             return jsonify({"message": "No more seats available"}), 405
-#         new_current_session.remain_seats -= 1
-#         new_current_session.save_to_db()
+#     score = ScoresModel.find_by_id(id_, to_dict=False)
+#     if not score:
+#         return jsonify({"message": "Score not found."}), 404
 #     if user_id:
-#         ticket.user_id = user_id
+#         score.user_id = user_id
 #     if isinstance(is_active, bool):
-#         ticket.is_active = is_active
+#         score.is_active = is_active
 #
-#     ticket.save_to_db()
+#     score.save_to_db()
 #
 #     return jsonify({"message": "Updated"})
 #
 #
-# @tickets_bp.route("/api/tickets/<int:id_>", methods=["DELETE"])
+# @tickets_bp.route("/api/scores/<int:id_>", methods=["DELETE"])
 # @jwt_required()
-# def delete_ticket(id_):
+# def delete_score(id_):
 #     """
-#     Delete ticket by id as user
-#     :param id_: id of ticket
+#     Delete score by id as user
+#     :param id_: id of score
 #     :return: json with message "Deleted"
 #     """
-#     ticket = TicketsModel.find_by_id(id_, to_dict=False)
-#     if not ticket:
-#         return jsonify({"message": "Ticket not found."}), 404
+#     score = ScoresModel.find_by_id(id_, to_dict=False)
+#     if not score:
+#         return jsonify({"message": "Score not found."}), 404
 #     email = get_jwt().get("sub")
 #     current_user = UserModel.find_by_email(email, to_dict=False)
-#     groups = get_jwt().get("groups")
-#     if "admin" not in groups:
-#         if current_user.id != ticket["user_id"]:
-#             return jsonify({"message": "Not allowed"}), 405
-#
-#     current_session = MovieSessionsModel.find_by_id(ticket.session_id, to_dict=False)
-#     current_session.remain_seats += 1
-#     current_session.save_to_db()
-#     ticket = TicketsModel.delete_by_id(id_)
+#     score = ScoresModel.delete_by_id(id_)
 #     return jsonify({"message": "Deleted"})

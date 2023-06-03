@@ -1,4 +1,4 @@
-from flask import jsonify, request, Blueprint, make_response, redirect, flash, render_template
+from flask import jsonify, request, Blueprint
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, get_jwt,
     jwt_required, get_jwt_identity)
@@ -21,7 +21,6 @@ def register():
     nickname = request.json.get("nickname")
     email = request.json.get("email")
     password = request.json.get("password")
-    # is_admin = request.json.get("is_admin")
 
     if not firstname or not lastname or not nickname or not email or not password:
         return jsonify({"message": 'Please, specify "firstname", "lastname", "nickname", "email", "password".'}), 400

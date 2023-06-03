@@ -7,6 +7,10 @@ genres_bp = Blueprint('genre', __name__)
 
 @genres_bp.route("/api/movies/genre/<int:id_>", methods=["GET"])
 def get_movies_genre(id_):
+    """
+    Method for movie genres with pages
+    :return: movies list
+    """
     page = request.args.get("page")
     genre = tmdb.Genres(id_)
     if genre:
@@ -17,10 +21,13 @@ def get_movies_genre(id_):
 
 @genres_bp.route("/api/tv/genre/<int:id_>", methods=["GET"])
 def get_tv_genre(id_):
+    """
+    Method for tv genres with pages
+    :return: tv list
+    """
     page = request.args.get("page")
     discover = tmdb.Discover()
     res = discover.tv(with_genres=id_, page=page)
-    # genre = tmdb.Genres(id_)
     if res:
         return jsonify(res)
     else:
@@ -29,6 +36,10 @@ def get_tv_genre(id_):
 
 @genres_bp.route("/api/tv/genres", methods=["GET"])
 def get_tv_genres():
+    """
+    Method for tv genres
+    :return: tv list
+    """
     genre = tmdb.Genres()
     if genre:
         return jsonify(genre.tv_list())
@@ -38,6 +49,10 @@ def get_tv_genres():
 
 @genres_bp.route("/api/movies/genres", methods=["GET"])
 def get_genres():
+    """
+    Method for movie genres
+    :return: movies list
+    """
     genre = tmdb.Genres()
     if genre:
         return jsonify(genre.movie_list())
